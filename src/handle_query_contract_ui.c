@@ -86,12 +86,7 @@ static bool set_redeem_request_out_asset_ui(ethQueryContractUI_t *msg, context_t
         clean_cpy_ticker(ticker, "USD");
     }
 
-    return amountToString(context->min_receive_amount,
-                          sizeof(context->min_receive_amount),
-                          18,
-                          ticker,
-                          msg->msg,
-                          msg->msgLength);
+    return strlcpy(msg->msg, ticker, msg->msgLength);
 }
 
 void handle_query_contract_ui(ethQueryContractUI_t *msg) {
@@ -115,9 +110,7 @@ void handle_query_contract_ui(ethQueryContractUI_t *msg) {
             break;
         case 2:
             if(context->is_request) {
-                if(!context->is_deposit) {
-                    ret = set_redeem_request_out_asset_ui(msg, context);
-                }
+                ret = set_redeem_request_out_asset_ui(msg, context);
             } else { 
                 ret = set_min_to_receive_ui(msg, context);
             }

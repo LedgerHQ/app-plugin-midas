@@ -20,6 +20,8 @@ void handle_finalize(ethPluginFinalize_t *msg) {
             break;
         case DEPOSIT_REQUEST:
             context->is_deposit = true;
+            // dont need "You will receive" screen for deposit requests
+            msg->numScreens -= 1;
         case REDEEM_FIAT_REQUEST: 
             context->is_fiat = true;
         case REDEEM_REQUEST: 

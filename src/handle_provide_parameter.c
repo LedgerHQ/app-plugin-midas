@@ -1,8 +1,7 @@
 #include "plugin.h"
 // #define PRINTF screen_printf
 
-// EDIT THIS: Remove this function and write your own handlers!
-static void handle_instant(ethPluginProvideParameter_t *msg, context_t *context) {
+static void handle_parameters(ethPluginProvideParameter_t *msg, context_t *context, bool is_request) {
     if (context->go_to_offset) {
         if (msg->parameterOffset != context->offset + SELECTOR_SIZE) {
             return;
@@ -27,7 +26,7 @@ static void handle_instant(ethPluginProvideParameter_t *msg, context_t *context)
                 msg->parameter, 
                 sizeof(context->token_amount)
             );
-            context->next_param = MIN_RECEIVE_AMOUNT;
+            context->next_param = is_request ? UNSUPPORTED_PARAMETER : MIN_RECEIVE_AMOUNT;
             break;
         case MIN_RECEIVE_AMOUNT:  // minReceiveAmount
             PRINTF("MIN_RECEIVE_AMOUNT\n");
@@ -66,9 +65,12 @@ void handle_provide_parameter(ethPluginProvideParameter_t *msg) {
     switch (context->selectorIndex) {
         case DEPOSIT_INSTANT:
         case REDEEM_INSTANT:
-            handle_instant(msg, context);
+            handle_parameters(msg, context, true);
             break;
         case DEPOSIT_REQUEST:
+        case REDEEM_REQUEST:
+        case REDEEM_FIAT_REQUEST:
+            handle_parameters(msg, context, false);
             break;
         default:
             PRINTF("Selector Index not supported: %d\n", context->selectorIndex);
