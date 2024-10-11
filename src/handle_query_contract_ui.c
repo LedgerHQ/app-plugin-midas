@@ -1,15 +1,29 @@
 #include "plugin.h"
-#define PRINTF screen_printf
+// #define PRINTF screen_printf
+
+
+static void clean_cpy_ticker(
+    char *dest,
+    const char *ticker
+) { 
+    memset(dest, 0, MAX_TICKER_LEN);
+    strlcpy(dest, ticker, MAX_TICKER_LEN);
+}
+
+static char* m_product_t_to_ticker(
+    m_product_t m_product
+) { 
+    return m_product == M_BASIS ? "mBASIS" : "mTBILL";
+}
 
 // Set UI for the "Product" screen.
 static bool set_product_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "Product", msg->titleLength);
 
-    return strlcpy(msg->msg, context->m_product == M_BASIS ? "mBASIS" : "mTBILL", msg->msgLength);
+    return strlcpy(msg->msg, m_product_t_to_ticker(context->m_product), msg->msgLength);
 }
 
-// // Set UI for "Token" screen.
-// // EDIT THIS: Adapt / remove this function to your needs.
+// // Set UI for "Token amount" screen.
 static bool set_token_amount_ui(ethQueryContractUI_t *msg, const context_t *context) {
     strlcpy(msg->title, context->is_deposit ? "To pay" : "To redeem", msg->titleLength);
 
@@ -21,15 +35,10 @@ static bool set_token_amount_ui(ethQueryContractUI_t *msg, const context_t *cont
     
     if(context->is_deposit) {
         if (!context->token_ticker_found) {
-            // TODO: move to fn
-            memset(ticker, 0, MAX_TICKER_LEN);
-            strlcpy(ticker, "UNKN", MAX_TICKER_LEN);
+            clean_cpy_ticker(ticker, "UNKN");
         }
     } else {
-        // TODO: move to fn
-        memset(ticker, 0, MAX_TICKER_LEN);
-        // TODO: move mToken name to fn
-        strlcpy(ticker, context->m_product == M_BASIS ? "mBASIS" : "mTBILL", MAX_TICKER_LEN);
+        clean_cpy_ticker(ticker, m_product_t_to_ticker(context->m_product));
     }
 
     return amountToString(context->token_amount,
@@ -53,15 +62,10 @@ static bool set_min_to_receive_ui(ethQueryContractUI_t *msg, context_t *context)
     
     if(!context->is_deposit) {
         if (!context->token_ticker_found) {
-            // TODO: move to fn
-            memset(ticker, 0, MAX_TICKER_LEN);
-            strlcpy(ticker, "UNKN", MAX_TICKER_LEN);
+            clean_cpy_ticker(ticker, "UNKN");
         }
     } else {
-        // TODO: move to fn
-        memset(ticker, 0, MAX_TICKER_LEN);
-        // TODO: move mToken name to fn
-        strlcpy(ticker, context->m_product == M_BASIS ? "mBASIS" : "mTBILL", MAX_TICKER_LEN);
+        clean_cpy_ticker(ticker, m_product_t_to_ticker(context->m_product));
     }
 
     return amountToString(context->min_receive_amount,

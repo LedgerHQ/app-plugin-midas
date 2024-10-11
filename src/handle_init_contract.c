@@ -1,6 +1,6 @@
 #include "plugin_utils.h"
 #include "plugin.h"
-#define PRINTF screen_printf
+// #define PRINTF screen_printf
 
 // task: docker exec -it -u 0  ledger-ethereum-app-plugin-container bash -c ' [ -f ./tests//requirements.txt ] && pip install -r ./tests//requirements.txt' ; docker exec -it  ledger-ethereum-app-plugin-container bash -c 'pytest ./tests/ --tb=short -v --device nanosp --display'
 // Called once to init.

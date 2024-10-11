@@ -1,5 +1,5 @@
 #include "plugin.h"
-#define PRINTF screen_printf
+// #define PRINTF screen_printf
 
 // EDIT THIS: Remove this function and write your own handlers!
 static void handle_instant(ethPluginProvideParameter_t *msg, context_t *context) {

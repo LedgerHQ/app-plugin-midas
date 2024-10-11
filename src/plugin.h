@@ -19,10 +19,9 @@
 
 #include <string.h>
 #include "eth_plugin_interface.h"
-#define PRINTF screen_printf
+// #define PRINTF screen_printf
 
 // All possible selectors of your plugin.
-// EDIT THIS: Enter your selectors here, in the format X(NAME, value)
 // A Xmacro below will create for you:
 //     - an enum named selector_t with every NAME
 //     - a map named SELECTORS associating each NAME with it's value
@@ -63,8 +62,6 @@ typedef enum m_product_e{
 } m_product_t;
 
 // Shared global memory with Ethereum app. Must be at most 5 * 32 bytes.
-// EDIT THIS: This struct is used by your plugin to save the parameters you parse. You
-// will need to adapt this struct to your plugin.
 typedef struct context_s {
     // For display.
     bool is_deposit;
