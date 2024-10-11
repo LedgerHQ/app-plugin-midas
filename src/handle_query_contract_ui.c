@@ -1,67 +1,75 @@
 #include "plugin.h"
+#define PRINTF screen_printf
 
-// EDIT THIS: You need to adapt / remove the static functions (set_send_ui, set_receive_ui ...) to
-// match what you wish to display.
+// Set UI for the "Product" screen.
+static bool set_product_ui(ethQueryContractUI_t *msg, context_t *context) {
+    strlcpy(msg->title, "Product", msg->titleLength);
 
-// Set UI for the "Send" screen.
-// EDIT THIS: Adapt / remove this function to your needs.
-static bool set_send_ui(ethQueryContractUI_t *msg) {
-    strlcpy(msg->title, "Send", msg->titleLength);
-
-    const uint8_t *eth_amount = msg->pluginSharedRO->txContent->value.value;
-    uint8_t eth_amount_size = msg->pluginSharedRO->txContent->value.length;
-
-    // Converts the uint256 number located in `eth_amount` to its string representation and
-    // copies this to `msg->msg`.
-    return amountToString(eth_amount,
-                          eth_amount_size,
-                          WEI_TO_ETHER,
-                          "ETH",
-                          msg->msg,
-                          msg->msgLength);
+    return strlcpy(msg->msg, context->m_product == M_BASIS ? "mBASIS" : "mTBILL", msg->msgLength);
 }
 
-// Set UI for "Receive" screen.
-// EDIT THIS: Adapt / remove this function to your needs.
-static bool set_receive_ui(ethQueryContractUI_t *msg, const context_t *context) {
-    strlcpy(msg->title, "Receive Min.", msg->titleLength);
+// // Set UI for "Token" screen.
+// // EDIT THIS: Adapt / remove this function to your needs.
+static bool set_token_amount_ui(ethQueryContractUI_t *msg, const context_t *context) {
+    strlcpy(msg->title, context->is_deposit ? "To pay" : "To redeem", msg->titleLength);
 
-    uint8_t decimals = context->decimals;
-    const char *ticker = context->ticker;
+    const uint8_t decimals = 18;
 
-    // If the token look up failed, use the default network ticker along with the default decimals.
-    if (!context->token_found) {
-        decimals = WEI_TO_ETHER;
-        ticker = msg->network_ticker;
+    const char *ticker = context->token_ticker;
+
+    // If the token look up failed, use the default unknown ticker
+    
+    if(context->is_deposit) {
+        if (!context->token_ticker_found) {
+            // TODO: move to fn
+            memset(ticker, 0, MAX_TICKER_LEN);
+            strlcpy(ticker, "UNKN", MAX_TICKER_LEN);
+        }
+    } else {
+        // TODO: move to fn
+        memset(ticker, 0, MAX_TICKER_LEN);
+        // TODO: move mToken name to fn
+        strlcpy(ticker, context->m_product == M_BASIS ? "mBASIS" : "mTBILL", MAX_TICKER_LEN);
     }
 
-    return amountToString(context->amount_received,
-                          sizeof(context->amount_received),
+    return amountToString(context->token_amount,
+                          sizeof(context->token_amount),
                           decimals,
                           ticker,
                           msg->msg,
                           msg->msgLength);
 }
 
-// Set UI for "Beneficiary" screen.
-// EDIT THIS: Adapt / remove this function to your needs.
-static bool set_beneficiary_ui(ethQueryContractUI_t *msg, context_t *context) {
-    strlcpy(msg->title, "Beneficiary", msg->titleLength);
+// // Set UI for "Beneficiary" screen.
+// // EDIT THIS: Adapt / remove this function to your needs.
+static bool set_min_to_receive_ui(ethQueryContractUI_t *msg, context_t *context) {
+    strlcpy(msg->title, "Min. to receive", msg->titleLength);
 
-    // Prefix the address with `0x`.
-    msg->msg[0] = '0';
-    msg->msg[1] = 'x';
+    const uint8_t decimals = 18;
 
-    // We need a random chainID for legacy reasons with `getEthAddressStringFromBinary`.
-    // Setting it to `0` will make it work with every chainID :)
-    uint64_t chainid = 0;
+    const char *ticker = context->token_ticker;
 
-    // Get the string representation of the address stored in `context->beneficiary`. Put it in
-    // `msg->msg`.
-    return getEthAddressStringFromBinary(
-        context->beneficiary,
-        msg->msg + 2,  // +2 here because we've already prefixed with '0x'.
-        chainid);
+    // If the token look up failed, use the default unknown ticker
+    
+    if(!context->is_deposit) {
+        if (!context->token_ticker_found) {
+            // TODO: move to fn
+            memset(ticker, 0, MAX_TICKER_LEN);
+            strlcpy(ticker, "UNKN", MAX_TICKER_LEN);
+        }
+    } else {
+        // TODO: move to fn
+        memset(ticker, 0, MAX_TICKER_LEN);
+        // TODO: move mToken name to fn
+        strlcpy(ticker, context->m_product == M_BASIS ? "mBASIS" : "mTBILL", MAX_TICKER_LEN);
+    }
+
+    return amountToString(context->min_receive_amount,
+                          sizeof(context->min_receive_amount),
+                          decimals,
+                          ticker,
+                          msg->msg,
+                          msg->msgLength);
 }
 
 void handle_query_contract_ui(ethQueryContractUI_t *msg) {
@@ -78,13 +86,13 @@ void handle_query_contract_ui(ethQueryContractUI_t *msg) {
     // EDIT THIS: Adapt the cases for the screens you'd like to display.
     switch (msg->screenIndex) {
         case 0:
-            ret = set_send_ui(msg);
+            ret = set_product_ui(msg, context);
             break;
         case 1:
-            ret = set_receive_ui(msg, context);
+            ret = set_token_amount_ui(msg, context);
             break;
         case 2:
-            ret = set_beneficiary_ui(msg, context);
+            ret = set_min_to_receive_ui(msg, context);
             break;
         // Keep this
         default:

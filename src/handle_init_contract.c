@@ -1,6 +1,8 @@
 #include "plugin_utils.h"
 #include "plugin.h"
+#define PRINTF screen_printf
 
+// task: docker exec -it -u 0  ledger-ethereum-app-plugin-container bash -c ' [ -f ./tests//requirements.txt ] && pip install -r ./tests//requirements.txt' ; docker exec -it  ledger-ethereum-app-plugin-container bash -c 'pytest ./tests/ --tb=short -v --device nanosp --display'
 // Called once to init.
 void handle_init_contract(ethPluginInitContract_t *msg) {
     // Make sure we are running a compatible version.
@@ -36,16 +38,15 @@ void handle_init_contract(ethPluginInitContract_t *msg) {
         msg->result = ETH_PLUGIN_RESULT_ERROR;
         return;
     }
-
     // Set `next_param` to be the first field we expect to parse.
     // EDIT THIS: Adapt the `cases`, and set the `next_param` to be the first parameter you expect
     // to parse.
     switch (context->selectorIndex) {
-        case SWAP_EXACT_ETH_FOR_TOKENS:
-            context->next_param = MIN_AMOUNT_RECEIVED;
+        case DEPOSIT_INSTANT:
+            context->next_param = TOKEN_ADDRESS;
             break;
-        case BOILERPLATE_DUMMY_2:
-            context->next_param = TOKEN_RECEIVED;
+        case DEPOSIT_REQUEST:
+            context->next_param = TOKEN_ADDRESS;
             break;
         // Keep this
         default:

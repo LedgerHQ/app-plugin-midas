@@ -19,6 +19,7 @@
 
 #include <string.h>
 #include "eth_plugin_interface.h"
+#define PRINTF screen_printf
 
 // All possible selectors of your plugin.
 // EDIT THIS: Enter your selectors here, in the format X(NAME, value)
@@ -26,8 +27,11 @@
 //     - an enum named selector_t with every NAME
 //     - a map named SELECTORS associating each NAME with it's value
 #define SELECTORS_LIST(X)                    \
-    X(SWAP_EXACT_ETH_FOR_TOKENS, 0x7ff36ab5) \
-    X(BOILERPLATE_DUMMY_2, 0x13374242)
+    X(DEPOSIT_INSTANT, 0xc02dd27a)           \
+    X(DEPOSIT_REQUEST, 0x6e26b9f8)           \
+    X(REDEEM_INSTANT, 0x8b53f75e)            \
+    X(REDEEM_REQUEST, 0xbfc2d46a)            \
+    X(REDEEM_FIAT_REQUEST, 0xd5f73f5c)       \
 
 // Xmacro helpers to define the enum and map
 // Do not modify !
@@ -46,30 +50,34 @@ typedef enum selector_e {
 extern const uint32_t SELECTORS[SELECTOR_COUNT];
 
 // Enumeration used to parse the smart contract data.
-// EDIT THIS: Adapt the parameter names here.
 typedef enum {
-    MIN_AMOUNT_RECEIVED = 0,
-    TOKEN_RECEIVED,
-    BENEFICIARY,
-    PATH_OFFSET,
-    PATH_LENGTH,
-    UNEXPECTED_PARAMETER,
+    TOKEN_ADDRESS = 0,
+    TOKEN_AMOUNT,
+    MIN_RECEIVE_AMOUNT,
+    UNSUPPORTED_PARAMETER
 } parameter;
+
+typedef enum m_product_e{
+    M_TBILL,
+    M_BASIS    
+} m_product_t;
 
 // Shared global memory with Ethereum app. Must be at most 5 * 32 bytes.
 // EDIT THIS: This struct is used by your plugin to save the parameters you parse. You
 // will need to adapt this struct to your plugin.
 typedef struct context_s {
     // For display.
-    uint8_t amount_received[INT256_LENGTH];
-    uint8_t beneficiary[ADDRESS_LENGTH];
-    uint8_t token_received[ADDRESS_LENGTH];
-    char ticker[MAX_TICKER_LEN];
-    uint8_t decimals;
-    uint8_t token_found;
+    bool is_deposit;
+    m_product_t m_product;
+    uint8_t token_address[ADDRESS_LENGTH];
+    char token_ticker[MAX_TICKER_LEN];
+    bool token_ticker_found;
+    uint8_t token_amount[INT256_LENGTH];
+    uint8_t min_receive_amount[INT256_LENGTH];
 
     // For parsing data.
     uint8_t next_param;  // Set to be the next param we expect to parse.
+
     uint16_t offset;     // Offset at which the array or struct starts.
     bool go_to_offset;   // If set, will force the parsing to iterate through parameters until
                          // `offset` is reached.
@@ -81,3 +89,13 @@ typedef struct context_s {
 // Check if the context structure will fit in the RAM section ETH will prepare for us
 // Do not remove!
 ASSERT_SIZEOF_PLUGIN_CONTEXT(context_t);
+
+static inline void printf_hex_array(const char *title __attribute__((unused)),
+                                    size_t len __attribute__((unused)),
+                                    const uint8_t *data __attribute__((unused))) {
+    PRINTF(title);
+    for (size_t i = 0; i < len; ++i) {
+        PRINTF("%02x", data[i]);
+    };
+    PRINTF("\n");
+}

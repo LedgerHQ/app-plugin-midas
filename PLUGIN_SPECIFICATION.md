@@ -13,7 +13,7 @@ Smart contracts covered by the plugin shall be described here:
 
 |  Network | Version | Smart Contract | Address |
 |   ----   |   ---   |      ----      |   ---   |
-| NetworkName   | VX  | ContractName  | `0x0000000000000000000000000000000000000000` |
+| Mainnet   | v1  | MTbillDepositVault  | `0x99361435420711723aF805F08187c9E6bF796683` |
 
 ## Functions
 
@@ -21,4 +21,4 @@ For the smart contracts implemented, the functions covered by the plugin shall b
 
 |Contract |    Function   | Selector  | Displayed Parameters |
 |   ---   |    ---        | ---       | --- |
-|ContractName  | FunctionName           | `0x00000000`| <table><tbody> <tr><td><code>type ParameterName</code></td></tr> </tbody></table> |
+|MTbillDepositVault  | depositInstant           | `0xc02dd27a`| <table><tbody> <tr><td><code>address tokenIn </code></td></tr> <tr><td><code>uint256 amountToken</code></td></tr></tbody></table> |

@@ -26,3 +26,7 @@ pytest_plugins = ("ragger.conftest.base_conftest", )
 @pytest.fixture
 def wallet_addr(backend):
     return WalletAddr(backend)
+
+@pytest.fixture(scope=configuration.OPTIONAL.BACKEND_SCOPE)
+def additional_speculos_arguments():
+    return ["--log-level", "usb:DEBUG","--log-level", "speculos:DEBUG", "--log-level", "seproxyhal:DEBUG"]

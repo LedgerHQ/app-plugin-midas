@@ -1,21 +1,33 @@
 #include "plugin.h"
+#define PRINTF screen_printf
 
 void handle_finalize(ethPluginFinalize_t *msg) {
     context_t *context = (context_t *) msg->pluginContext;
 
     msg->uiType = ETH_UI_TYPE_GENERIC;
 
-    // EDIT THIS: Set the total number of screen you will need.
-    msg->numScreens = 2;
-    // EDIT THIS: Handle this case like you wish to (i.e. maybe no additional screen needed?).
-    // If the beneficiary is NOT the sender, we will need an additional screen to display it.
-    if (memcmp(msg->address, context->beneficiary, ADDRESS_LENGTH) != 0) {
-        msg->numScreens += 1;
+    msg->numScreens = 1;
+
+    switch(context->selectorIndex) { 
+        case DEPOSIT_INSTANT:
+        case REDEEM_INSTANT: 
+            msg->numScreens += 2;
+            break;
+        case DEPOSIT_REQUEST:
+        case REDEEM_REQUEST: 
+            msg->numScreens += 1;
+            break;
+        default:
+            PRINTF("handle_finalize: unsupported selector index");
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            return;
     }
 
-    // EDIT THIS: set `tokenLookup1` (and maybe `tokenLookup2`) to point to
-    // token addresses you will info for (such as decimals, ticker...).
-    msg->tokenLookup1 = context->token_received;
+    printf_hex_array("Token lookup\n", ADDRESS_LENGTH, context->token_address);
+    msg->tokenLookup1 = context->token_address;
+
+    context->m_product = M_TBILL;
+    context->is_deposit = true;
 
     msg->result = ETH_PLUGIN_RESULT_OK;
 }

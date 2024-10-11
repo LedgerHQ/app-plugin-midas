@@ -23,4 +23,12 @@ APPVERSION_M = 1
 APPVERSION_N = 0
 APPVERSION_P = 0
 
+APP_SOURCE_FILES += $(BOLOS_SDK)/lib_standard_app/crypto_helpers.c
+INCLUDES_PATH += $(BOLOS_SDK)/lib_standard_app
+
+# Uncomment for PRINTF debugging
+# DEFINES += HAVE_SPRINTF HAVE_PRINTF PRINTF=screen_printf
+# DEBUG=1
+# DISABLE_STANDARD_SNPRINTF=0
+
 include ethereum-plugin-sdk/standard_plugin.mk
