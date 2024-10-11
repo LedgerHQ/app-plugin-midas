@@ -27,8 +27,6 @@ static bool set_product_ui(ethQueryContractUI_t *msg, context_t *context) {
 static bool set_token_amount_ui(ethQueryContractUI_t *msg, const context_t *context) {
     strlcpy(msg->title, context->is_deposit ? "To pay" : "To redeem", msg->titleLength);
 
-    const uint8_t decimals = 18;
-
     const char *ticker = context->token_ticker;
 
     // If the token look up failed, use the default unknown ticker
@@ -43,18 +41,15 @@ static bool set_token_amount_ui(ethQueryContractUI_t *msg, const context_t *cont
 
     return amountToString(context->token_amount,
                           sizeof(context->token_amount),
-                          decimals,
+                          18,
                           ticker,
                           msg->msg,
                           msg->msgLength);
 }
 
-// // Set UI for "Beneficiary" screen.
-// // EDIT THIS: Adapt / remove this function to your needs.
+// // Set UI for "Min to receive" screen.
 static bool set_min_to_receive_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "Min. to receive", msg->titleLength);
-
-    const uint8_t decimals = 18;
 
     const char *ticker = context->token_ticker;
 
@@ -70,7 +65,30 @@ static bool set_min_to_receive_ui(ethQueryContractUI_t *msg, context_t *context)
 
     return amountToString(context->min_receive_amount,
                           sizeof(context->min_receive_amount),
-                          decimals,
+                          18,
+                          ticker,
+                          msg->msg,
+                          msg->msgLength);
+}
+
+// // Set UI for "Min to receive" screen.
+static bool set_redeem_request_out_asset_ui(ethQueryContractUI_t *msg, context_t *context) {
+    strlcpy(msg->title, "You will receive", msg->titleLength);
+
+    const char *ticker = context->token_ticker;
+
+    // If the token look up failed, use the default unknown ticker
+    if(!context->is_fiat) {
+        if (!context->token_ticker_found) {
+            clean_cpy_ticker(ticker, "UNKN");
+        }
+    } else {
+        clean_cpy_ticker(ticker, "USD");
+    }
+
+    return amountToString(context->min_receive_amount,
+                          sizeof(context->min_receive_amount),
+                          18,
                           ticker,
                           msg->msg,
                           msg->msgLength);
@@ -96,7 +114,13 @@ void handle_query_contract_ui(ethQueryContractUI_t *msg) {
             ret = set_token_amount_ui(msg, context);
             break;
         case 2:
-            ret = set_min_to_receive_ui(msg, context);
+            if(context->is_request) {
+                if(!context->is_deposit) {
+                    ret = set_redeem_request_out_asset_ui(msg, context);
+                }
+            } else { 
+                ret = set_min_to_receive_ui(msg, context);
+            }
             break;
         // Keep this
         default:

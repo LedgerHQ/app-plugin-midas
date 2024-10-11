@@ -64,7 +64,9 @@ typedef enum m_product_e{
 // Shared global memory with Ethereum app. Must be at most 5 * 32 bytes.
 typedef struct context_s {
     // For display.
+    bool is_request;
     bool is_deposit;
+    bool is_fiat;
     m_product_t m_product;
     uint8_t token_address[ADDRESS_LENGTH];
     char token_ticker[MAX_TICKER_LEN];

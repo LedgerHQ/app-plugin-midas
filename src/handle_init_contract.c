@@ -43,9 +43,10 @@ void handle_init_contract(ethPluginInitContract_t *msg) {
     // to parse.
     switch (context->selectorIndex) {
         case DEPOSIT_INSTANT:
-            context->next_param = TOKEN_ADDRESS;
-            break;
+        case REDEEM_INSTANT:
         case DEPOSIT_REQUEST:
+        case REDEEM_REQUEST:
+        case REDEEM_FIAT_REQUEST:
             context->next_param = TOKEN_ADDRESS;
             break;
         // Keep this
