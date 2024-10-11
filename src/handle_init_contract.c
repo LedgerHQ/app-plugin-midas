@@ -38,6 +38,9 @@ void handle_init_contract(ethPluginInitContract_t *msg) {
         msg->result = ETH_PLUGIN_RESULT_ERROR;
         return;
     }
+    // TODO: remove
+    printf_hex_array("DESTINATION", ADDRESS_LENGTH, msg->pluginSharedRO->txContent->destination);
+    
     // Set `next_param` to be the first field we expect to parse.
     // EDIT THIS: Adapt the `cases`, and set the `next_param` to be the first parameter you expect
     // to parse.

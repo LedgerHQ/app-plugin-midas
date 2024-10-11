@@ -37,8 +37,7 @@ void handle_finalize(ethPluginFinalize_t *msg) {
     printf_hex_array("Token lookup\n", ADDRESS_LENGTH, context->token_address);
     msg->tokenLookup1 = context->token_address;
     
-    // FIXME:
-    context->m_product = M_TBILL;
+    context->m_product = determine_product_type(msg->pluginSharedRO->txContent->destination);
 
     msg->result = ETH_PLUGIN_RESULT_OK;
 }

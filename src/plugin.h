@@ -19,6 +19,7 @@
 
 #include <string.h>
 #include "eth_plugin_interface.h"
+#include "utils.h"
 // #define PRINTF screen_printf
 
 // All possible selectors of your plugin.
@@ -56,11 +57,6 @@ typedef enum {
     UNSUPPORTED_PARAMETER
 } parameter;
 
-typedef enum m_product_e{
-    M_TBILL,
-    M_BASIS    
-} m_product_t;
-
 // Shared global memory with Ethereum app. Must be at most 5 * 32 bytes.
 typedef struct context_s {
     // For display.
@@ -88,13 +84,3 @@ typedef struct context_s {
 // Check if the context structure will fit in the RAM section ETH will prepare for us
 // Do not remove!
 ASSERT_SIZEOF_PLUGIN_CONTEXT(context_t);
-
-static inline void printf_hex_array(const char *title __attribute__((unused)),
-                                    size_t len __attribute__((unused)),
-                                    const uint8_t *data __attribute__((unused))) {
-    PRINTF(title);
-    for (size_t i = 0; i < len; ++i) {
-        PRINTF("%02x", data[i]);
-    };
-    PRINTF("\n");
-}
