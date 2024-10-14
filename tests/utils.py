@@ -123,7 +123,9 @@ def prepare_tx_params_deposit_instant(client, m_token = MToken.mTBILL, params = 
 
     return tx_params
 
-def prepare_tx_params_deposit_request(client, params = None, depositVault = contracts.mTBillDepositVaultContract):
+def prepare_tx_params_deposit_request(client, m_token = MToken.mTBILL, params = None):
+    depositVault = contracts.mTBillDepositVaultContract if m_token.value == "mTBILL" else contracts.mBasisDepositVaultContract
+
     data = depositVault.encode_abi("depositRequest", args=[
         getattr(params, 'tokenAddress', "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
         Web3.to_wei(getattr(params, 'tokenAmount', 100), "ether"),
@@ -187,11 +189,29 @@ def prepare_tx_params_redeem_instant(client, m_token = MToken.mTBILL, vault_type
 
     return tx_params
 
-def prepare_tx_params_redeem_request(client, params = None, redeemVault = contracts.mTBillRedemptionVaultContract):
-    data = redeemVault.encode_abi(getattr(params, 'requestFn', "redeemRequest"), args=[
-        getattr(params, 'tokenAddress', "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
-        Web3.to_wei(getattr(params, 'mTokenAmount', 100), "ether"),
-    ])
+def prepare_tx_params_redeem_request(client, m_token = MToken.mTBILL, vault_type = RedemptionVaultType.REGULAR, params = None):
+    redeemVault = None
+
+    if vault_type == RedemptionVaultType.REGULAR:
+        redeemVault = contracts.mTBillRedemptionVaultContract if m_token == MToken.mTBILL else contracts.mBasisRedemptionVaultContract
+    elif vault_type == RedemptionVaultType.BUIDL:
+        assert(m_token == MToken.mTBILL)
+        redeemVault = contracts.mTBillRedemptionVaultBuidlContract
+    elif vault_type == RedemptionVaultType.SWAPPER:
+        assert(m_token == MToken.mBASIS)
+        redeemVault = contracts.mBasisRedemptionVaultSwapperContract
+
+    data = None
+
+    if getattr(params, 'requestFn', "redeemRequest") == 'redeemRequest':
+        data = redeemVault.encode_abi('redeemRequest', args=[
+            getattr(params, 'tokenAddress', "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
+            Web3.to_wei(getattr(params, 'mTokenAmount', 100), "ether"),
+        ])
+    else:
+        data = redeemVault.encode_abi('redeemFiatRequest', args=[
+            Web3.to_wei(getattr(params, 'mTokenAmount', 100), "ether"),
+        ])
 
     # first setup the external plugin
     client.set_external_plugin(PLUGIN_NAME,
