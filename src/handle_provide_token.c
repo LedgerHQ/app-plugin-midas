@@ -1,5 +1,4 @@
 #include "plugin.h"
-#define PRINTF screen_printf
 
 void handle_provide_token(ethPluginProvideInfo_t *msg) {
     context_t *context = (context_t *) msg->pluginContext;

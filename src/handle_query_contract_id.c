@@ -1,5 +1,4 @@
 #include "plugin.h"
-// #define PRINTF screen_printf
 
 // Sets the first screen to display.
 void handle_query_contract_id(ethQueryContractID_t *msg) {

@@ -1,16 +1,15 @@
 #include "plugin.h"
-// #define PRINTF screen_printf
 
 
 static void clean_cpy_ticker(
-    char *dest,
+    char const *dest,
     const char *ticker
 ) { 
-    memset(dest, 0, MAX_TICKER_LEN);
-    strlcpy(dest, ticker, MAX_TICKER_LEN);
+    memset((char *)dest, 0, MAX_TICKER_LEN);
+    strlcpy((char *)dest, ticker, MAX_TICKER_LEN);
 }
 
-static char* m_product_t_to_ticker(
+static const char* m_product_t_to_ticker(
     m_product_t m_product
 ) { 
     return m_product == M_BASIS ? "mBASIS" : "mTBILL";

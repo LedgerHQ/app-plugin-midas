@@ -20,7 +20,6 @@
 #include <string.h>
 #include "eth_plugin_interface.h"
 #include "utils.h"
-// #define PRINTF screen_printf
 
 // All possible selectors of your plugin.
 // A Xmacro below will create for you:

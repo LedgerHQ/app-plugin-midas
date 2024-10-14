@@ -1,5 +1,4 @@
 #include "plugin.h"
-// #define PRINTF screen_printf
 
 static void handle_parameters(ethPluginProvideParameter_t *msg, context_t *context, bool is_request) {
     if (context->go_to_offset) {

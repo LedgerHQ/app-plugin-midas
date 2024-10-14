@@ -1,6 +1,5 @@
 #include "eth_plugin_interface.h"
 #include "contracts.h"
-// #define PRINTF screen_printf
 
 static inline void printf_hex_array(const char *title __attribute__((unused)),
                                     size_t len __attribute__((unused)),
