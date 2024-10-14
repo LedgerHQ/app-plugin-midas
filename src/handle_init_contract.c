@@ -49,8 +49,10 @@ void handle_init_contract(ethPluginInitContract_t *msg) {
         case REDEEM_INSTANT:
         case DEPOSIT_REQUEST:
         case REDEEM_REQUEST:
-        case REDEEM_FIAT_REQUEST:
             context->next_param = TOKEN_ADDRESS;
+            break;
+        case REDEEM_FIAT_REQUEST:
+            context->next_param = TOKEN_AMOUNT;
             break;
         // Keep this
         default:
