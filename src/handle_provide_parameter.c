@@ -61,7 +61,6 @@ void handle_provide_parameter(ethPluginProvideParameter_t *msg) {
 
     msg->result = ETH_PLUGIN_RESULT_OK;
 
-    // EDIT THIS: adapt the cases and the names of the functions.
     switch (context->selectorIndex) {
         case DEPOSIT_INSTANT:
         case REDEEM_INSTANT:

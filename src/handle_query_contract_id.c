@@ -10,7 +10,6 @@ void handle_query_contract_id(ethQueryContractID_t *msg) {
     // For the first screen, display the plugin name.
     strlcpy(msg->name, APPNAME, msg->nameLength);
 
-    // EDIT THIS: Adapt the cases by modifying the strings you pass to `strlcpy`.
     if (context->selectorIndex == DEPOSIT_INSTANT) {
         strlcpy(msg->version, "Mint Instant", msg->versionLength);
         msg->result = ETH_PLUGIN_RESULT_OK;
