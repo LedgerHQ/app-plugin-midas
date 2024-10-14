@@ -62,6 +62,12 @@ class MToken(Enum):
     mBASIS = "mBASIS"
     mTBILL = "mTBILL"
 
+class RedemptionVaultType(Enum):
+    REGULAR = 0
+    BUIDL = 0
+    SWAPPER = 0
+    
+
 def load_contract(m_product_name, addr):
     with open(f"{ABIS_FOLDER}/{m_product_name}/{addr}.abi.json") as file:
         contract = Web3().eth.contract(
@@ -144,7 +150,18 @@ def prepare_tx_params_deposit_request(client, params = None, depositVault = cont
     return tx_params
 
 
-def prepare_tx_params_redeem_instant(client, params = None, redeemVault = contracts.mTBillRedemptionVaultContract):
+def prepare_tx_params_redeem_instant(client, m_token = MToken.mTBILL, vault_type = RedemptionVaultType.REGULAR, params = None):
+    redeemVault = None
+
+    if vault_type == RedemptionVaultType.REGULAR:
+        redeemVault = contracts.mTBillRedemptionVaultContract if m_token == MToken.mTBILL else contracts.mBasisRedemptionVaultContract
+    elif vault_type == RedemptionVaultType.BUIDL:
+        assert(m_token == MToken.mTBILL)
+        redeemVault = contracts.mTBillRedemptionVaultBuidlContract
+    elif vault_type == RedemptionVaultType.SWAPPER:
+        assert(m_token == MToken.mBASIS)
+        redeemVault = contracts.mBasisRedemptionVaultSwapperContract
+
     data = redeemVault.encode_abi("redeemInstant", args=[
         getattr(params, 'tokenAddress', "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
         Web3.to_wei(getattr(params, 'mTokenAmount', 10), "ether"),
