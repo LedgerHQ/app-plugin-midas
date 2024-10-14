@@ -8,6 +8,7 @@ from enum import Enum
 from web3 import Web3
 
 from eth_typing import ChainId
+from .token_metadata_database import USDT
 from ledger_app_clients.ethereum.client import EthAppClient
 import ledger_app_clients.ethereum.response_parser as ResponseParser
 from ledger_app_clients.ethereum.utils import get_selector_from_data, recover_transaction
@@ -93,12 +94,20 @@ def load_contracts():
 contracts = load_contracts()
 PLUGIN_NAME = get_appname_from_makefile()
 
+def provide_token_metadata(client, token_metadata):
+    client.provide_token_metadata(token_metadata.ticker,
+                                    bytes.fromhex(token_metadata.address),
+                                    token_metadata.decimals,
+                                    token_metadata.chain_id)
 
 def prepare_tx_params_deposit_instant(client, m_token = MToken.mTBILL, params = None):
     depositVault = contracts.mTBillDepositVaultContract if m_token.value == "mTBILL" else contracts.mBasisDepositVaultContract
     
+    token = getattr(params, 'token', USDT)
+    provide_token_metadata(client, token)
+
     data = depositVault.encode_abi("depositInstant", args=[
-        getattr(params, 'tokenAddress', "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
+        Web3.to_checksum_address(token.address),
         Web3.to_wei(getattr(params, 'tokenAmount', 100), "ether"),
         Web3.to_wei(getattr(params, 'minToReceive', 0), "ether"),
         bytes.fromhex(getattr(params, 'referrerId', "00" * 32)),
@@ -126,8 +135,11 @@ def prepare_tx_params_deposit_instant(client, m_token = MToken.mTBILL, params = 
 def prepare_tx_params_deposit_request(client, m_token = MToken.mTBILL, params = None):
     depositVault = contracts.mTBillDepositVaultContract if m_token.value == "mTBILL" else contracts.mBasisDepositVaultContract
 
+    token = getattr(params, 'token', USDT)
+    provide_token_metadata(client, token)
+
     data = depositVault.encode_abi("depositRequest", args=[
-        getattr(params, 'tokenAddress', "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
+        Web3.to_checksum_address(token.address),
         Web3.to_wei(getattr(params, 'tokenAmount', 100), "ether"),
         bytes.fromhex(getattr(params, 'referrerId', "00" * 32)),
     ])
@@ -164,8 +176,11 @@ def prepare_tx_params_redeem_instant(client, m_token = MToken.mTBILL, vault_type
         assert(m_token == MToken.mBASIS)
         redeemVault = contracts.mBasisRedemptionVaultSwapperContract
 
+    token = getattr(params, 'token', USDT)
+    provide_token_metadata(client, token)
+
     data = redeemVault.encode_abi("redeemInstant", args=[
-        getattr(params, 'tokenAddress', "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
+        Web3.to_checksum_address(token.address),
         Web3.to_wei(getattr(params, 'mTokenAmount', 10), "ether"),
         Web3.to_wei(getattr(params, 'minToReceive', 0), "ether")
     ])
@@ -203,9 +218,14 @@ def prepare_tx_params_redeem_request(client, m_token = MToken.mTBILL, vault_type
 
     data = None
 
+  
+
     if getattr(params, 'requestFn', "redeemRequest") == 'redeemRequest':
+        token = getattr(params, 'token', USDT)
+        provide_token_metadata(client, token)
+
         data = redeemVault.encode_abi('redeemRequest', args=[
-            getattr(params, 'tokenAddress', "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
+            Web3.to_checksum_address(token.address),
             Web3.to_wei(getattr(params, 'mTokenAmount', 100), "ether"),
         ])
     else:
