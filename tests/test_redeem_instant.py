@@ -1,9 +1,11 @@
 from .utils import MToken, RedemptionVaultType, prepare_tx_params_redeem_instant
+from types import SimpleNamespace
+from .token_metadata_database import UNKN
 
 
 class TestRedeemInstant:
-    def __redeem_instant(self, request, sign_helper, eth_client, m_token, vault_type = RedemptionVaultType.REGULAR):
-        tx_params = prepare_tx_params_redeem_instant(eth_client, m_token, vault_type)
+    def __redeem_instant(self, request, sign_helper, eth_client, m_token, vault_type = RedemptionVaultType.REGULAR, params = None):
+        tx_params = prepare_tx_params_redeem_instant(eth_client, m_token, vault_type, params)
         sign_helper.sign_and_ui_validate(tx_params)
 
     def test_redeem_instant_m_tbill(self, request, sign_helper, eth_client):
@@ -17,3 +19,6 @@ class TestRedeemInstant:
 
     def test_redeem_instant_swapper_m_basis(self, request, sign_helper, eth_client):
         self.__redeem_instant(request, sign_helper, eth_client, MToken.mBASIS, RedemptionVaultType.SWAPPER)
+
+    def test_redeem_instant_m_tbill_unknown_payment_token(self, request, sign_helper, eth_client):
+        self.__redeem_instant(request, sign_helper, eth_client, MToken.mBASIS, RedemptionVaultType.REGULAR, SimpleNamespace(token=UNKN))

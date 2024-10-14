@@ -104,7 +104,8 @@ def prepare_tx_params_deposit_instant(client, m_token = MToken.mTBILL, params = 
     depositVault = contracts.mTBillDepositVaultContract if m_token.value == "mTBILL" else contracts.mBasisDepositVaultContract
     
     token = getattr(params, 'token', USDT)
-    provide_token_metadata(client, token)
+    if token.supported:
+        provide_token_metadata(client, token)
 
     data = depositVault.encode_abi("depositInstant", args=[
         Web3.to_checksum_address(token.address),
@@ -136,7 +137,8 @@ def prepare_tx_params_deposit_request(client, m_token = MToken.mTBILL, params = 
     depositVault = contracts.mTBillDepositVaultContract if m_token.value == "mTBILL" else contracts.mBasisDepositVaultContract
 
     token = getattr(params, 'token', USDT)
-    provide_token_metadata(client, token)
+    if token.supported:
+        provide_token_metadata(client, token)
 
     data = depositVault.encode_abi("depositRequest", args=[
         Web3.to_checksum_address(token.address),
@@ -177,7 +179,8 @@ def prepare_tx_params_redeem_instant(client, m_token = MToken.mTBILL, vault_type
         redeemVault = contracts.mBasisRedemptionVaultSwapperContract
 
     token = getattr(params, 'token', USDT)
-    provide_token_metadata(client, token)
+    if token.supported:
+        provide_token_metadata(client, token)
 
     data = redeemVault.encode_abi("redeemInstant", args=[
         Web3.to_checksum_address(token.address),
@@ -222,7 +225,8 @@ def prepare_tx_params_redeem_request(client, m_token = MToken.mTBILL, vault_type
 
     if getattr(params, 'requestFn', "redeemRequest") == 'redeemRequest':
         token = getattr(params, 'token', USDT)
-        provide_token_metadata(client, token)
+        if token.supported:
+            provide_token_metadata(client, token)
 
         data = redeemVault.encode_abi('redeemRequest', args=[
             Web3.to_checksum_address(token.address),
