@@ -15,7 +15,6 @@
 #   limitations under the License.
 # ****************************************************************************
 
-# EDIT THIS: Application name
 APPNAME = "Midas"
 
 # Application version
