@@ -2,6 +2,7 @@ from pathlib import Path
 import json
 import os
 import datetime
+import pytest
 
 from web3 import Web3
 from eth_typing import ChainId
@@ -11,11 +12,12 @@ import ledger_app_clients.ethereum.response_parser as ResponseParser
 from ledger_app_clients.ethereum.utils import get_selector_from_data, recover_transaction
 from ragger.navigator import NavInsID
 
-from .utils import get_appname_from_makefile, DERIVATION_PATH, load_contracts, prepare_tx_params_deposit_instant, prepare_tx_params_deposit_request, prepare_tx_params_redeem_instant, prepare_tx_params_redeem_request
+from .utils import MToken, get_appname_from_makefile, DERIVATION_PATH, load_contracts, prepare_tx_params_deposit_instant, prepare_tx_params_deposit_request, prepare_tx_params_redeem_instant, prepare_tx_params_redeem_request
 
 import logging
 
 ROOT_SCREENSHOT_PATH = Path(__file__).parent
+print(f'ROOT_SCREENSHOT_PATH {ROOT_SCREENSHOT_PATH}')
 ABIS_FOLDER = "%s/abis" % (os.path.dirname(__file__))
 
 PLUGIN_NAME = get_appname_from_makefile()
@@ -24,60 +26,67 @@ PLUGIN_NAME = get_appname_from_makefile()
 logging.basicConfig(level=logging.DEBUG)
 
 
-def test_deposit_instant_playground(backend, firmware, navigator, test_name, wallet_addr):
-    client = EthAppClient(backend)
+# def test_deposit_instant(request, sign_helper, eth_client):
+#     tx_params = prepare_tx_params_deposit_instant(eth_client, MToken.mTBILL)
+#     sign_helper.sign_and_ui_validate(tx_params)
 
-    tx_params = prepare_tx_params_deposit_instant(client)
-    # send the transaction
-    with client.sign(DERIVATION_PATH, tx_params):
-        print("Playground")
-
-    # verify signature
-    vrs = ResponseParser.signature(client.response().data)
-    addr = recover_transaction(tx_params, vrs)
-    assert addr == wallet_addr.get()
+# @pytest.mark.parametrize("m_token", ["mBASIS", "mTBILL"])
+# def test_deposit_instant_playground(backend, firmware, navigator, test_name, wallet_addr, m_token):
+#     client = EthAppClient(backend)
 
 
+#     print(f'm_token1 {m_token}')
+#     tx_params = prepare_tx_params_deposit_instant(client, m_token)
+#     # send the transaction
+#     with client.sign(DERIVATION_PATH, tx_params):
+#         print("Playground")
 
-def test_redeem_instant_playground(backend, firmware, navigator, test_name, wallet_addr):
-    client = EthAppClient(backend)
-
-    tx_params = prepare_tx_params_redeem_instant(client)
-    # send the transaction
-    with client.sign(DERIVATION_PATH, tx_params):
-        print("Playground")
-
-    # verify signature
-    vrs = ResponseParser.signature(client.response().data)
-    addr = recover_transaction(tx_params, vrs)
-    assert addr == wallet_addr.get()
-
-def test_deposit_request_playground(backend, firmware, navigator, test_name, wallet_addr):
-    client = EthAppClient(backend)
-
-    tx_params = prepare_tx_params_deposit_request(client)
-    # send the transaction
-    with client.sign(DERIVATION_PATH, tx_params):
-        print("Playground")
-
-    # verify signature
-    vrs = ResponseParser.signature(client.response().data)
-    addr = recover_transaction(tx_params, vrs)
-    assert addr == wallet_addr.get()
+#     # verify signature
+#     vrs = ResponseParser.signature(client.response().data)
+#     addr = recover_transaction(tx_params, vrs)
+#     assert addr == wallet_addr.get()
 
 
-def test_redeem_request_playground(backend, firmware, navigator, test_name, wallet_addr):
-    client = EthAppClient(backend)
 
-    tx_params = prepare_tx_params_redeem_request(client)
-    # send the transaction
-    with client.sign(DERIVATION_PATH, tx_params):
-        print("Playground")
+# def test_redeem_instant_playground(backend, firmware, navigator, test_name, wallet_addr):
+#     client = EthAppClient(backend)
 
-    # verify signature
-    vrs = ResponseParser.signature(client.response().data)
-    addr = recover_transaction(tx_params, vrs)
-    assert addr == wallet_addr.get()
+#     tx_params = prepare_tx_params_redeem_instant(client)
+#     # send the transaction
+#     with client.sign(DERIVATION_PATH, tx_params):
+#         print("Playground")
+
+#     # verify signature
+#     vrs = ResponseParser.signature(client.response().data)
+#     addr = recover_transaction(tx_params, vrs)
+#     assert addr == wallet_addr.get()
+
+# def test_deposit_request_playground(backend, firmware, navigator, test_name, wallet_addr):
+#     client = EthAppClient(backend)
+
+#     tx_params = prepare_tx_params_deposit_request(client)
+#     # send the transaction
+#     with client.sign(DERIVATION_PATH, tx_params):
+#         print("Playground")
+
+#     # verify signature
+#     vrs = ResponseParser.signature(client.response().data)
+#     addr = recover_transaction(tx_params, vrs)
+#     assert addr == wallet_addr.get()
+
+
+# def test_redeem_request_playground(backend, firmware, navigator, test_name, wallet_addr):
+#     client = EthAppClient(backend)
+
+#     tx_params = prepare_tx_params_redeem_request(client)
+#     # send the transaction
+#     with client.sign(DERIVATION_PATH, tx_params):
+#         print("Playground")
+
+#     # verify signature
+#     vrs = ResponseParser.signature(client.response().data)
+#     addr = recover_transaction(tx_params, vrs)
+#     assert addr == wallet_addr.get()
 
 
 # def test_redeem_instant_playground(backend, firmware, navigator, test_name, wallet_addr):

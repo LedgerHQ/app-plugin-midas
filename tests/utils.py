@@ -3,6 +3,7 @@ import re
 from pathlib import Path
 from typing import Optional
 import json
+from enum import Enum
 
 from web3 import Web3
 
@@ -11,7 +12,7 @@ from ledger_app_clients.ethereum.client import EthAppClient
 import ledger_app_clients.ethereum.response_parser as ResponseParser
 from ledger_app_clients.ethereum.utils import get_selector_from_data, recover_transaction
 from ragger.navigator import NavInsID
-
+import ledger_app_clients.ethereum.response_parser as ResponseParser
 
 DERIVATION_PATH = "m/44'/60'/0'/0/0"
 makefile_relative_path = "../Makefile"
@@ -57,6 +58,10 @@ class WalletAddr:
 class Object(object):
     pass
 
+class MToken(Enum):
+    mBASIS = "mBASIS"
+    mTBILL = "mTBILL"
+
 def load_contract(m_product_name, addr):
     with open(f"{ABIS_FOLDER}/{m_product_name}/{addr}.abi.json") as file:
         contract = Web3().eth.contract(
@@ -83,7 +88,9 @@ contracts = load_contracts()
 PLUGIN_NAME = get_appname_from_makefile()
 
 
-def prepare_tx_params_deposit_instant(client, params = None, depositVault = contracts.mTBillDepositVaultContract):
+def prepare_tx_params_deposit_instant(client, m_token = MToken.mTBILL, params = None):
+    depositVault = contracts.mTBillDepositVaultContract if m_token.value == "mTBILL" else contracts.mBasisDepositVaultContract
+    
     data = depositVault.encode_abi("depositInstant", args=[
         getattr(params, 'tokenAddress', "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
         Web3.to_wei(getattr(params, 'tokenAmount', 100), "ether"),
