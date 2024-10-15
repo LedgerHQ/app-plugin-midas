@@ -6,16 +6,16 @@ void handle_finalize(ethPluginFinalize_t *msg) {
     msg->uiType = ETH_UI_TYPE_GENERIC;
 
     msg->numScreens = 1;
-    
+
     context->is_deposit = false;
     context->is_request = false;
     context->is_fiat = false;
 
-    switch(context->selectorIndex) { 
+    switch (context->selectorIndex) {
         case DEPOSIT_INSTANT:
             context->is_deposit = true;
             __attribute__((fallthrough));
-        case REDEEM_INSTANT: 
+        case REDEEM_INSTANT:
             msg->numScreens += 2;
             break;
         case DEPOSIT_REQUEST:
@@ -25,10 +25,10 @@ void handle_finalize(ethPluginFinalize_t *msg) {
             // fallthrough to REDEEM_FIAT_REQUEST case is expected
             // as it wont affect because it wont reach the screen №3
             __attribute__((fallthrough));
-        case REDEEM_FIAT_REQUEST: 
+        case REDEEM_FIAT_REQUEST:
             context->is_fiat = true;
             __attribute__((fallthrough));
-        case REDEEM_REQUEST: 
+        case REDEEM_REQUEST:
             context->is_request = true;
             msg->numScreens += 2;
             break;
@@ -40,7 +40,7 @@ void handle_finalize(ethPluginFinalize_t *msg) {
 
     printf_hex_array("Token lookup\n", ADDRESS_LENGTH, context->token_address);
     msg->tokenLookup1 = context->token_address;
-    
+
     context->m_product = determine_product_type(msg->pluginSharedRO->txContent->destination);
 
     msg->result = ETH_PLUGIN_RESULT_OK;

@@ -25,12 +25,12 @@
 // A Xmacro below will create for you:
 //     - an enum named selector_t with every NAME
 //     - a map named SELECTORS associating each NAME with it's value
-#define SELECTORS_LIST(X)                    \
-    X(DEPOSIT_INSTANT, 0xc02dd27a)           \
-    X(DEPOSIT_REQUEST, 0x6e26b9f8)           \
-    X(REDEEM_INSTANT, 0x8b53f75e)            \
-    X(REDEEM_REQUEST, 0xbfc2d46a)            \
-    X(REDEEM_FIAT_REQUEST, 0xd5f73f5c)       \
+#define SELECTORS_LIST(X)          \
+    X(DEPOSIT_INSTANT, 0xc02dd27a) \
+    X(DEPOSIT_REQUEST, 0x6e26b9f8) \
+    X(REDEEM_INSTANT, 0x8b53f75e)  \
+    X(REDEEM_REQUEST, 0xbfc2d46a)  \
+    X(REDEEM_FIAT_REQUEST, 0xd5f73f5c)
 
 // Xmacro helpers to define the enum and map
 // Do not modify !
@@ -72,9 +72,9 @@ typedef struct context_s {
     // For parsing data.
     uint8_t next_param;  // Set to be the next param we expect to parse.
 
-    uint16_t offset;     // Offset at which the array or struct starts.
-    bool go_to_offset;   // If set, will force the parsing to iterate through parameters until
-                         // `offset` is reached.
+    uint16_t offset;    // Offset at which the array or struct starts.
+    bool go_to_offset;  // If set, will force the parsing to iterate through parameters until
+                        // `offset` is reached.
 
     // For both parsing and display.
     selector_t selectorIndex;

@@ -18,7 +18,8 @@ void handle_query_contract_id(ethQueryContractID_t *msg) {
     } else if (context->selectorIndex == DEPOSIT_REQUEST) {
         strlcpy(msg->version, "Mint Request", msg->versionLength);
         msg->result = ETH_PLUGIN_RESULT_OK;
-    } else if (context->selectorIndex == REDEEM_REQUEST || context->selectorIndex == REDEEM_FIAT_REQUEST) {
+    } else if (context->selectorIndex == REDEEM_REQUEST ||
+               context->selectorIndex == REDEEM_FIAT_REQUEST) {
         strlcpy(msg->version, "Redeem Request", msg->versionLength);
         msg->result = ETH_PLUGIN_RESULT_OK;
     } else {

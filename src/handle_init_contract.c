@@ -37,7 +37,7 @@ void handle_init_contract(ethPluginInitContract_t *msg) {
         msg->result = ETH_PLUGIN_RESULT_ERROR;
         return;
     }
-    
+
     // Set `next_param` to be the first field we expect to parse.
     // to parse.
     switch (context->selectorIndex) {

@@ -1,6 +1,8 @@
 #include "plugin.h"
 
-static void handle_parameters(ethPluginProvideParameter_t *msg, context_t *context, bool is_request) {
+static void handle_parameters(ethPluginProvideParameter_t *msg,
+                              context_t *context,
+                              bool is_request) {
     if (context->go_to_offset) {
         if (msg->parameterOffset != context->offset + SELECTOR_SIZE) {
             return;
@@ -11,29 +13,19 @@ static void handle_parameters(ethPluginProvideParameter_t *msg, context_t *conte
     switch (context->next_param) {
         case TOKEN_ADDRESS:  // input/output token
             PRINTF("TOKEN_ADDRESS\n");
-            copy_address(
-                context->token_address, 
-                msg->parameter, 
-                sizeof(context->token_address)
-            );
+            copy_address(context->token_address, msg->parameter, sizeof(context->token_address));
             context->next_param = TOKEN_AMOUNT;
             break;
         case TOKEN_AMOUNT:  // amountToken/amountMToken
             PRINTF("TOKEN_AMOUNT\n");
-            copy_parameter(
-                context->token_amount, 
-                msg->parameter, 
-                sizeof(context->token_amount)
-            );
+            copy_parameter(context->token_amount, msg->parameter, sizeof(context->token_amount));
             context->next_param = is_request ? UNSUPPORTED_PARAMETER : MIN_RECEIVE_AMOUNT;
             break;
         case MIN_RECEIVE_AMOUNT:  // minReceiveAmount
             PRINTF("MIN_RECEIVE_AMOUNT\n");
-            copy_parameter(
-                context->min_receive_amount, 
-                msg->parameter, 
-                sizeof(context->min_receive_amount)
-            );
+            copy_parameter(context->min_receive_amount,
+                           msg->parameter,
+                           sizeof(context->min_receive_amount));
             context->next_param = UNSUPPORTED_PARAMETER;
             break;
         case UNSUPPORTED_PARAMETER:  // skip referrerId

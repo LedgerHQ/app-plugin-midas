@@ -1,17 +1,11 @@
 #include "plugin.h"
 
-
-static void clean_cpy_ticker(
-    char const *dest,
-    const char *ticker
-) { 
-    memset((char *)dest, 0, MAX_TICKER_LEN);
-    strlcpy((char *)dest, ticker, MAX_TICKER_LEN);
+static void clean_cpy_ticker(char const *dest, const char *ticker) {
+    memset((char *) dest, 0, MAX_TICKER_LEN);
+    strlcpy((char *) dest, ticker, MAX_TICKER_LEN);
 }
 
-static const char* m_product_t_to_ticker(
-    m_product_t m_product
-) { 
+static const char *m_product_t_to_ticker(m_product_t m_product) {
     return m_product == M_BASIS ? "mBASIS" : "mTBILL";
 }
 
@@ -27,12 +21,12 @@ static bool set_token_amount_ui(ethQueryContractUI_t *msg, const context_t *cont
     strlcpy(msg->title, context->is_deposit ? "To pay" : "To redeem", msg->titleLength);
 
     char ticker[MAX_TICKER_LEN];
-    
+
     clean_cpy_ticker(ticker, context->token_ticker);
 
     // If the token look up failed, use the default unknown ticker
-    
-    if(context->is_deposit) {
+
+    if (context->is_deposit) {
         if (!context->token_ticker_found) {
             clean_cpy_ticker(ticker, "????");
         }
@@ -53,12 +47,12 @@ static bool set_min_to_receive_ui(ethQueryContractUI_t *msg, context_t *context)
     strlcpy(msg->title, "Min. to receive", msg->titleLength);
 
     char ticker[MAX_TICKER_LEN];
-    
+
     clean_cpy_ticker(ticker, context->token_ticker);
 
     // If the token look up failed, use the default unknown ticker
-    
-    if(context->is_deposit) {
+
+    if (context->is_deposit) {
         clean_cpy_ticker(ticker, m_product_t_to_ticker(context->m_product));
     } else {
         if (!context->token_ticker_found) {
@@ -79,11 +73,11 @@ static bool set_redeem_request_out_asset_ui(ethQueryContractUI_t *msg, context_t
     strlcpy(msg->title, "You will receive", msg->titleLength);
 
     char ticker[MAX_TICKER_LEN];
-    
+
     clean_cpy_ticker(ticker, context->token_ticker);
 
     // If the token look up failed, use the default unknown ticker
-    if(!context->is_fiat) {
+    if (!context->is_fiat) {
         if (!context->token_ticker_found) {
             clean_cpy_ticker(ticker, "????");
         }
@@ -113,9 +107,9 @@ void handle_query_contract_ui(ethQueryContractUI_t *msg) {
             ret = set_token_amount_ui(msg, context);
             break;
         case 2:
-            if(context->is_request) {
+            if (context->is_request) {
                 ret = set_redeem_request_out_asset_ui(msg, context);
-            } else { 
+            } else {
                 ret = set_min_to_receive_ui(msg, context);
             }
             break;

@@ -1,6 +1,5 @@
 #include "eth_plugin_interface.h"
 
-
 #define M_TBILL_DEPOSIT_VAULT_ADDRESS                                                             \
     {                                                                                             \
         0x99, 0x36, 0x14, 0x35, 0x42, 0x07, 0x11, 0x72, 0x3a, 0xF8, 0x05, 0xF0, 0x81, 0x87, 0xc9, \
@@ -19,11 +18,10 @@
             0xA5, 0x00, 0xc4, 0xf0, 0xEc                                                          \
     }
 
-typedef enum m_product_e {
-    M_TBILL,
-    M_BASIS    
-} m_product_t;
+typedef enum m_product_e { M_TBILL, M_BASIS } m_product_t;
 
 static const uint8_t m_tbill_deposit_vault_address[ADDRESS_LENGTH] = M_TBILL_DEPOSIT_VAULT_ADDRESS;
-static const uint8_t m_tbill_redemption_vault_address[ADDRESS_LENGTH] = M_TBILL_REDEMPTION_VAULT_ADDRESS;
-static const uint8_t m_tbill_redemption_buidl_vault_address[ADDRESS_LENGTH] = M_TBILL_REDEMPTION_BUIDL_VAULT_ADDRESS;
+static const uint8_t m_tbill_redemption_vault_address[ADDRESS_LENGTH] =
+    M_TBILL_REDEMPTION_VAULT_ADDRESS;
+static const uint8_t m_tbill_redemption_buidl_vault_address[ADDRESS_LENGTH] =
+    M_TBILL_REDEMPTION_BUIDL_VAULT_ADDRESS;
