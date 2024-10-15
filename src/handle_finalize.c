@@ -14,6 +14,7 @@ void handle_finalize(ethPluginFinalize_t *msg) {
     switch(context->selectorIndex) { 
         case DEPOSIT_INSTANT:
             context->is_deposit = true;
+            __attribute__((fallthrough));
         case REDEEM_INSTANT: 
             msg->numScreens += 2;
             break;
@@ -21,8 +22,12 @@ void handle_finalize(ethPluginFinalize_t *msg) {
             context->is_deposit = true;
             // dont need "You will receive" screen for deposit requests
             msg->numScreens -= 1;
+            // fallthrough to REDEEM_FIAT_REQUEST case is expected
+            // as it wont affect because it wont reach the screen №3
+            __attribute__((fallthrough));
         case REDEEM_FIAT_REQUEST: 
             context->is_fiat = true;
+            __attribute__((fallthrough));
         case REDEEM_REQUEST: 
             context->is_request = true;
             msg->numScreens += 2;
