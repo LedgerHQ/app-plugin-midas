@@ -2,7 +2,7 @@
 [![Compilation & tests](https://github.com/LedgerHQ/app-plugin-boilerplate/actions/workflows/build_and_functional_tests.yml/badge.svg?branch=develop)](https://github.com/LedgerHQ/app-plugin-boilerplate/actions/workflows/build_and_functional_tests.yml)
 
 
-# app-plugin-boilerplate
+# app-plugin-midas
 
 This repo is meant to be a forkable example of a plugin.
 
