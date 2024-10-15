@@ -26,7 +26,9 @@ static bool set_product_ui(ethQueryContractUI_t *msg, context_t *context) {
 static bool set_token_amount_ui(ethQueryContractUI_t *msg, const context_t *context) {
     strlcpy(msg->title, context->is_deposit ? "To pay" : "To redeem", msg->titleLength);
 
-    const char *ticker = context->token_ticker;
+    char ticker[MAX_TICKER_LEN];
+    
+    clean_cpy_ticker(ticker, context->token_ticker);
 
     // If the token look up failed, use the default unknown ticker
     
@@ -50,16 +52,18 @@ static bool set_token_amount_ui(ethQueryContractUI_t *msg, const context_t *cont
 static bool set_min_to_receive_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "Min. to receive", msg->titleLength);
 
-    const char *ticker = context->token_ticker;
+    char ticker[MAX_TICKER_LEN];
+    
+    clean_cpy_ticker(ticker, context->token_ticker);
 
     // If the token look up failed, use the default unknown ticker
     
-    if(!context->is_deposit) {
+    if(context->is_deposit) {
+        clean_cpy_ticker(ticker, m_product_t_to_ticker(context->m_product));
+    } else {
         if (!context->token_ticker_found) {
             clean_cpy_ticker(ticker, "????");
         }
-    } else {
-        clean_cpy_ticker(ticker, m_product_t_to_ticker(context->m_product));
     }
 
     return amountToString(context->min_receive_amount,
@@ -74,7 +78,9 @@ static bool set_min_to_receive_ui(ethQueryContractUI_t *msg, context_t *context)
 static bool set_redeem_request_out_asset_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "You will receive", msg->titleLength);
 
-    const char *ticker = context->token_ticker;
+    char ticker[MAX_TICKER_LEN];
+    
+    clean_cpy_ticker(ticker, context->token_ticker);
 
     // If the token look up failed, use the default unknown ticker
     if(!context->is_fiat) {
