@@ -49,12 +49,7 @@ typedef enum selector_e {
 extern const uint32_t SELECTORS[SELECTOR_COUNT];
 
 // Enumeration used to parse the smart contract data.
-typedef enum {
-    TOKEN_ADDRESS = 0,
-    TOKEN_AMOUNT,
-    MIN_RECEIVE_AMOUNT,
-    UNSUPPORTED_PARAMETER
-} parameter;
+typedef enum { TOKEN_ADDRESS = 0, TOKEN_AMOUNT, UNSUPPORTED_PARAMETER } parameter;
 
 // Shared global memory with Ethereum app. Must be at most 5 * 32 bytes.
 typedef struct context_s {
@@ -67,7 +62,6 @@ typedef struct context_s {
     char token_ticker[MAX_TICKER_LEN];
     bool token_ticker_found;
     uint8_t token_amount[INT256_LENGTH];
-    uint8_t min_receive_amount[INT256_LENGTH];
 
     // For parsing data.
     uint8_t next_param;  // Set to be the next param we expect to parse.

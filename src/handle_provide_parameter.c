@@ -1,8 +1,6 @@
 #include "plugin.h"
 
-static void handle_parameters(ethPluginProvideParameter_t *msg,
-                              context_t *context,
-                              bool is_request) {
+static void handle_parameters(ethPluginProvideParameter_t *msg, context_t *context) {
     if (context->go_to_offset) {
         if (msg->parameterOffset != context->offset + SELECTOR_SIZE) {
             return;
@@ -19,16 +17,9 @@ static void handle_parameters(ethPluginProvideParameter_t *msg,
         case TOKEN_AMOUNT:  // amountToken/amountMToken
             PRINTF("TOKEN_AMOUNT\n");
             copy_parameter(context->token_amount, msg->parameter, sizeof(context->token_amount));
-            context->next_param = is_request ? UNSUPPORTED_PARAMETER : MIN_RECEIVE_AMOUNT;
-            break;
-        case MIN_RECEIVE_AMOUNT:  // minReceiveAmount
-            PRINTF("MIN_RECEIVE_AMOUNT\n");
-            copy_parameter(context->min_receive_amount,
-                           msg->parameter,
-                           sizeof(context->min_receive_amount));
             context->next_param = UNSUPPORTED_PARAMETER;
             break;
-        case UNSUPPORTED_PARAMETER:  // skip referrerId
+        case UNSUPPORTED_PARAMETER:  // skip referrerId and minToReceive
             PRINTF("UNSUPPORTED_PARAMETER\n");
             break;
         // Keep this
@@ -55,12 +46,12 @@ void handle_provide_parameter(ethPluginProvideParameter_t *msg) {
     switch (context->selectorIndex) {
         case DEPOSIT_INSTANT:
         case REDEEM_INSTANT:
-            handle_parameters(msg, context, true);
+            handle_parameters(msg, context);
             break;
         case DEPOSIT_REQUEST:
         case REDEEM_REQUEST:
         case REDEEM_FIAT_REQUEST:
-            handle_parameters(msg, context, false);
+            handle_parameters(msg, context);
             break;
         default:
             PRINTF("Selector Index not supported: %d\n", context->selectorIndex);

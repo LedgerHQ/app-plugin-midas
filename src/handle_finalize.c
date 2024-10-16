@@ -16,7 +16,7 @@ void handle_finalize(ethPluginFinalize_t *msg) {
             context->is_deposit = true;
             __attribute__((fallthrough));
         case REDEEM_INSTANT:
-            msg->numScreens += 2;
+            msg->numScreens += 1;
             break;
         case DEPOSIT_REQUEST:
             context->is_deposit = true;
