@@ -10,13 +10,13 @@ void handle_query_contract_id(ethQueryContractID_t *msg) {
     strlcpy(msg->name, APPNAME, msg->nameLength);
 
     if (context->selectorIndex == DEPOSIT_INSTANT) {
-        strlcpy(msg->version, "Mint Instant", msg->versionLength);
+        strlcpy(msg->version, "Instant Buy", msg->versionLength);
         msg->result = ETH_PLUGIN_RESULT_OK;
     } else if (context->selectorIndex == REDEEM_INSTANT) {
-        strlcpy(msg->version, "Redeem Instant", msg->versionLength);
+        strlcpy(msg->version, "Instant Redeem", msg->versionLength);
         msg->result = ETH_PLUGIN_RESULT_OK;
     } else if (context->selectorIndex == DEPOSIT_REQUEST) {
-        strlcpy(msg->version, "Mint Request", msg->versionLength);
+        strlcpy(msg->version, "Buy Request", msg->versionLength);
         msg->result = ETH_PLUGIN_RESULT_OK;
     } else if (context->selectorIndex == REDEEM_REQUEST ||
                context->selectorIndex == REDEEM_FIAT_REQUEST) {
