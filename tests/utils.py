@@ -62,6 +62,7 @@ class Object(object):
 class MToken(Enum):
     mBASIS = "mBASIS"
     mTBILL = "mTBILL"
+    mBTC = "mBTC"
 
 class RedemptionVaultType(Enum):
     REGULAR = 0
@@ -89,6 +90,9 @@ def load_contracts():
     obj.mBasisRedemptionVaultContract = load_contract("mBASIS","0x19AB19e61A930bc5C7B75Bf06cDd954218Ca9F0b")
     obj.mBasisRedemptionVaultSwapperContract = load_contract("mBASIS","0x0D89C1C4799353F3805A3E6C4e1Cbbb83217D123")
     
+    obj.mBtcDepositVaultContract = load_contract("mBTC","0x10cC8dbcA90Db7606013d8CD2E77eb024dF693bD")
+    obj.mBtcRedemptionVaultContract = load_contract("mBTC","0x30d9D1e76869516AEa980390494AaEd45C3EfC1a")
+
     return obj
 
 contracts = load_contracts()
@@ -101,7 +105,14 @@ def provide_token_metadata(client, token_metadata):
                                     token_metadata.chain_id)
 
 def prepare_tx_params_deposit_instant(client, m_token = MToken.mTBILL, params = None):
-    depositVault = contracts.mTBillDepositVaultContract if m_token.value == "mTBILL" else contracts.mBasisDepositVaultContract
+    depositVault = None
+    
+    if m_token.value == MToken.mTBILL:
+        depositVault = contracts.mTBillDepositVaultContract  
+    elif m_token.value == MToken.mBASIS: 
+        depositVault = contracts.mBasisDepositVaultContract
+    else:
+        depositVault = contracts.mBtcDepositVaultContract
     
     token = getattr(params, 'token', USDT)
     if token.supported:
@@ -134,7 +145,14 @@ def prepare_tx_params_deposit_instant(client, m_token = MToken.mTBILL, params = 
     return tx_params
 
 def prepare_tx_params_deposit_request(client, m_token = MToken.mTBILL, params = None):
-    depositVault = contracts.mTBillDepositVaultContract if m_token.value == "mTBILL" else contracts.mBasisDepositVaultContract
+    depositVault = None
+
+    if m_token.value == MToken.mTBILL:
+        depositVault = contracts.mTBillDepositVaultContract  
+    elif m_token.value == MToken.mBASIS: 
+        depositVault = contracts.mBasisDepositVaultContract
+    else:
+        depositVault = contracts.mBtcDepositVaultContract
 
     token = getattr(params, 'token', USDT)
     if token.supported:
@@ -170,7 +188,12 @@ def prepare_tx_params_redeem_instant(client, m_token = MToken.mTBILL, vault_type
     redeemVault = None
 
     if vault_type == RedemptionVaultType.REGULAR:
-        redeemVault = contracts.mTBillRedemptionVaultContract if m_token == MToken.mTBILL else contracts.mBasisRedemptionVaultContract
+        if m_token.value == MToken.mTBILL:
+            redeemVault = contracts.mTBillRedemptionVaultContract  
+        elif m_token.value == MToken.mBASIS: 
+            redeemVault = contracts.mBasisRedemptionVaultContract
+        else:
+            redeemVault = contracts.mBtcRedemptionVaultContract
     elif vault_type == RedemptionVaultType.BUIDL:
         assert(m_token == MToken.mTBILL)
         redeemVault = contracts.mTBillRedemptionVaultBuidlContract
@@ -211,7 +234,12 @@ def prepare_tx_params_redeem_request(client, m_token = MToken.mTBILL, vault_type
     redeemVault = None
 
     if vault_type == RedemptionVaultType.REGULAR:
-        redeemVault = contracts.mTBillRedemptionVaultContract if m_token == MToken.mTBILL else contracts.mBasisRedemptionVaultContract
+         if m_token.value == MToken.mTBILL:
+            redeemVault = contracts.mTBillRedemptionVaultContract  
+        elif m_token.value == MToken.mBASIS: 
+            redeemVault = contracts.mBasisRedemptionVaultContract
+        else:
+            redeemVault = contracts.mBtcRedemptionVaultContract
     elif vault_type == RedemptionVaultType.BUIDL:
         assert(m_token == MToken.mTBILL)
         redeemVault = contracts.mTBillRedemptionVaultBuidlContract
@@ -220,8 +248,6 @@ def prepare_tx_params_redeem_request(client, m_token = MToken.mTBILL, vault_type
         redeemVault = contracts.mBasisRedemptionVaultSwapperContract
 
     data = None
-
-  
 
     if getattr(params, 'requestFn', "redeemRequest") == 'redeemRequest':
         token = getattr(params, 'token', USDT)

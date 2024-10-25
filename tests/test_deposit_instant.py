@@ -13,5 +13,8 @@ class TestDepositInstant:
     def test_deposit_instant_m_basis(self, request, sign_helper, eth_client):
         self.__deposit_instant(request, sign_helper, eth_client, MToken.mBASIS)
 
+    def test_deposit_instant_m_btc(self, request, sign_helper, eth_client):
+        self.__deposit_instant(request, sign_helper, eth_client, MToken.mBTC)
+
     def test_deposit_instant_m_tbill_unknown_payment_token(self, request, sign_helper, eth_client):
         self.__deposit_instant(request, sign_helper, eth_client, MToken.mBASIS, SimpleNamespace(token=UNKN))

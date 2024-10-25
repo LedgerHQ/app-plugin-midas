@@ -13,6 +13,9 @@ class TestRedeemRequest:
     def test_redeem_request_m_basis(self, request, sign_helper, eth_client):
         self.__redeem_request(request, sign_helper, eth_client, MToken.mBASIS)
 
+    def test_redeem_request_m_btc(self, request, sign_helper, eth_client):
+        self.__redeem_request(request, sign_helper, eth_client, MToken.mBTC)
+
     def test_redeem_request_buidl_m_tbill(self, request, sign_helper, eth_client):
         self.__redeem_request(request, sign_helper, eth_client, MToken.mTBILL, RedemptionVaultType.BUIDL)
 
@@ -24,6 +27,9 @@ class TestRedeemRequest:
 
     def test_redeem_request_fiat_m_basis(self, request, sign_helper, eth_client):
         self.__redeem_request(request, sign_helper, eth_client, MToken.mBASIS, RedemptionVaultType.REGULAR, SimpleNamespace(requestFn="redeemFiatRequest"))
+
+    def test_redeem_request_fiat_m_btc(self, request, sign_helper, eth_client):
+        self.__redeem_request(request, sign_helper, eth_client, MToken.mBTC, RedemptionVaultType.REGULAR, SimpleNamespace(requestFn="redeemFiatRequest"))
 
     def test_redeem_request_fiat_buidl_m_tbill(self, request, sign_helper, eth_client):
         self.__redeem_request(request, sign_helper, eth_client, MToken.mTBILL, RedemptionVaultType.BUIDL, SimpleNamespace(requestFn="redeemFiatRequest"))

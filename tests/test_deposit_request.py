@@ -14,5 +14,8 @@ class TestDepositRequest:
     def test_deposit_request_m_basis(self, request, sign_helper, eth_client):
         self.__deposit_request(request, sign_helper, eth_client, MToken.mBASIS)
 
+    def test_deposit_request_m_btc(self, request, sign_helper, eth_client):
+        self.__deposit_request(request, sign_helper, eth_client, MToken.mBTC)
+
     def test_deposit_request_m_tbill_unknown_payment_token(self, request, sign_helper, eth_client):
         self.__deposit_request(request, sign_helper, eth_client, MToken.mBASIS, SimpleNamespace(token=UNKN))

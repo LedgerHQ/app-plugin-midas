@@ -14,6 +14,9 @@ class TestRedeemInstant:
     def test_redeem_instant_m_basis(self, request, sign_helper, eth_client):
         self.__redeem_instant(request, sign_helper, eth_client, MToken.mBASIS)
 
+    def test_redeem_instant_m_btc(self, request, sign_helper, eth_client):
+        self.__redeem_instant(request, sign_helper, eth_client, MToken.mBTC)
+
     def test_redeem_instant_buidl_m_tbill(self, request, sign_helper, eth_client):
         self.__redeem_instant(request, sign_helper, eth_client, MToken.mTBILL, RedemptionVaultType.BUIDL)
 
