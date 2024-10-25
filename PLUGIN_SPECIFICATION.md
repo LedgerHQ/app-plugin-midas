@@ -19,6 +19,8 @@ Smart contracts covered by the plugin shall be described here:
 | Mainnet   | v1  | MBasisDepositVault  | `0xa8a5c4FF4c86a459EBbDC39c5BE77833B3A15d88` |
 | Mainnet   | v1  | MBasisRedemptionVault  | `0x19AB19e61A930bc5C7B75Bf06cDd954218Ca9F0b` |
 | Mainnet   | v1  | MBasisRedemptionVaultSwapper  | `0x0D89C1C4799353F3805A3E6C4e1Cbbb83217D123` |
+| Mainnet   | v1  | MBtcDepositVault  | `0x10cC8dbcA90Db7606013d8CD2E77eb024dF693bD` |
+| Mainnet   | v1  | MBtcRedemptionVault  | `0x30d9D1e76869516AEa980390494AaEd45C3EfC1a` |
 
 ## Functions
 
@@ -42,3 +44,8 @@ For the smart contracts implemented, the functions covered by the plugin shall b
 |MBasisRedemptionVaultSwapper|redeemInstant|`0x8b53f75e`| <table><tbody> <tr><td><code>address tokenOut </code></td></tr> <tr><td><code>uint256 amountMTokenIn</code></td></tr> <tr><td><code>uint256 minReceiveAmount </code></td></tr> </tbody></table> |
 |MBasisRedemptionVaultSwapper|redeemRequest|`0xbfc2d46a`| <table><tbody> <tr><td><code>address tokenOut </code></td></tr> <tr><td><code>uint256 amountMTokenIn</code></td></tr></tbody></table> |
 |MBasisRedemptionVaultSwapper|redeemFiatRequest|`0xd5f73f5c`| <table><tbody> <tr><td><code>uint256 amountMTokenIn</code></td></tr></tbody></table> |
+|MBtcDepositVault|depositInstant|`0xc02dd27a`| <table><tbody> <tr><td><code>address tokenIn </code></td></tr> <tr><td><code>uint256 amountToken</code></td></tr><tr><td><code>uint256 minReceiveAmount</code></td></tr> </tbody></table> |
+|MBtcDepositVault|depositRequest|`0x6e26b9f8`| <table><tbody> <tr><td><code>address tokenIn </code></td></tr> <tr><td><code>uint256 amountToken</code></td></tr> </tbody></table> |
+|MBtcRedemptionVault|redeemInstant|`0x8b53f75e`| <table><tbody> <tr><td><code>address tokenOut </code></td></tr> <tr><td><code>uint256 amountMTokenIn</code></td></tr> <tr><td><code>uint256 minReceiveAmount </code></td></tr> </tbody></table> |
+|MBtcRedemptionVault|redeemRequest|`0xbfc2d46a`| <table><tbody> <tr><td><code>address tokenOut </code></td></tr> <tr><td><code>uint256 amountMTokenIn</code></td></tr></tbody></table> |
+|MBtcRedemptionVault|redeemFiatRequest|`0xd5f73f5c`| <table><tbody> <tr><td><code>uint256 amountMTokenIn</code></td></tr></tbody></table> |
