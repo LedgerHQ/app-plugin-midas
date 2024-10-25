@@ -29,7 +29,7 @@ logging.basicConfig(level=logging.DEBUG)
 #     client = EthAppClient(backend)
 
 
-#     tx_params = prepare_tx_params_deposit_instant(client)
+#     tx_params = prepare_tx_params_deposit_instant(client, MToken.mBASIS)
 #     # send the transaction
 #     with client.sign(DERIVATION_PATH, tx_params):
 #         print("Playground")

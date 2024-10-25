@@ -107,11 +107,12 @@ def provide_token_metadata(client, token_metadata):
 def prepare_tx_params_deposit_instant(client, m_token = MToken.mTBILL, params = None):
     depositVault = None
     
-    if m_token.value == MToken.mTBILL:
+    if m_token == MToken.mTBILL:
         depositVault = contracts.mTBillDepositVaultContract  
-    elif m_token.value == MToken.mBASIS: 
+    elif m_token == MToken.mBASIS: 
         depositVault = contracts.mBasisDepositVaultContract
     else:
+        print("ABOBA", m_token, MToken.mBASIS)
         depositVault = contracts.mBtcDepositVaultContract
     
     token = getattr(params, 'token', USDT)
@@ -147,9 +148,9 @@ def prepare_tx_params_deposit_instant(client, m_token = MToken.mTBILL, params = 
 def prepare_tx_params_deposit_request(client, m_token = MToken.mTBILL, params = None):
     depositVault = None
 
-    if m_token.value == MToken.mTBILL:
+    if m_token == MToken.mTBILL:
         depositVault = contracts.mTBillDepositVaultContract  
-    elif m_token.value == MToken.mBASIS: 
+    elif m_token == MToken.mBASIS: 
         depositVault = contracts.mBasisDepositVaultContract
     else:
         depositVault = contracts.mBtcDepositVaultContract
@@ -188,9 +189,9 @@ def prepare_tx_params_redeem_instant(client, m_token = MToken.mTBILL, vault_type
     redeemVault = None
 
     if vault_type == RedemptionVaultType.REGULAR:
-        if m_token.value == MToken.mTBILL:
+        if m_token == MToken.mTBILL:
             redeemVault = contracts.mTBillRedemptionVaultContract  
-        elif m_token.value == MToken.mBASIS: 
+        elif m_token == MToken.mBASIS: 
             redeemVault = contracts.mBasisRedemptionVaultContract
         else:
             redeemVault = contracts.mBtcRedemptionVaultContract
@@ -234,9 +235,9 @@ def prepare_tx_params_redeem_request(client, m_token = MToken.mTBILL, vault_type
     redeemVault = None
 
     if vault_type == RedemptionVaultType.REGULAR:
-         if m_token.value == MToken.mTBILL:
+        if m_token == MToken.mTBILL:
             redeemVault = contracts.mTBillRedemptionVaultContract  
-        elif m_token.value == MToken.mBASIS: 
+        elif m_token == MToken.mBASIS: 
             redeemVault = contracts.mBasisRedemptionVaultContract
         else:
             redeemVault = contracts.mBtcRedemptionVaultContract
