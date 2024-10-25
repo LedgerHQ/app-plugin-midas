@@ -10,13 +10,23 @@ static inline void printf_hex_array(const char *title __attribute__((unused)),
     };
     PRINTF("\n");
 }
+
 static inline m_product_t determine_product_type(uint8_t *contract_address) {
-    return memcmp(m_tbill_deposit_vault_address, contract_address, ADDRESS_LENGTH) == 0 ||
-                   memcmp(m_tbill_redemption_vault_address, contract_address, ADDRESS_LENGTH) ==
-                       0 ||
-                   memcmp(m_tbill_redemption_buidl_vault_address,
-                          contract_address,
-                          ADDRESS_LENGTH) == 0
-               ? M_TBILL
-               : M_BASIS;
+    bool isMtbill =
+        memcmp(m_tbill_deposit_vault_address, contract_address, ADDRESS_LENGTH) == 0 ||
+        memcmp(m_tbill_redemption_vault_address, contract_address, ADDRESS_LENGTH) == 0 ||
+        memcmp(m_tbill_redemption_buidl_vault_address, contract_address, ADDRESS_LENGTH) == 0;
+
+    if (isMtbill) {
+        return M_TBILL;
+    }
+
+    bool isMbtc = memcmp(m_btc_deposit_vault_address, contract_address, ADDRESS_LENGTH) == 0 ||
+                  memcmp(m_btc_redemption_vault_address, contract_address, ADDRESS_LENGTH) == 0;
+
+    if (isMbtc) {
+        return M_BTC;
+    }
+
+    return M_BASIS;
 }

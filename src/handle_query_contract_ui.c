@@ -6,7 +6,7 @@ static void clean_cpy_ticker(char const *dest, const char *ticker) {
 }
 
 static const char *m_product_t_to_ticker(m_product_t m_product) {
-    return m_product == M_BASIS ? "mBASIS" : "mTBILL";
+    return m_product == M_BASIS ? "mBASIS" : (m_product == M_BTC ? "mBTC" : "mTBILL");
 }
 
 // Set UI for the "Product" screen.
