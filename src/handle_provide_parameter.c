@@ -1,26 +1,22 @@
 #include "plugin.h"
 
 static void handle_parameters(ethPluginProvideParameter_t *msg, context_t *context) {
-    if (context->go_to_offset) {
-        if (msg->parameterOffset != context->offset + SELECTOR_SIZE) {
-            return;
-        }
-        context->go_to_offset = false;
-    }
-
     switch (context->next_param) {
         case TOKEN_ADDRESS:  // input/output token
             PRINTF("TOKEN_ADDRESS\n");
             copy_address(context->token_address, msg->parameter, sizeof(context->token_address));
             context->next_param = TOKEN_AMOUNT;
+            msg->result = ETH_PLUGIN_RESULT_OK;
             break;
         case TOKEN_AMOUNT:  // amountToken/amountMToken
             PRINTF("TOKEN_AMOUNT\n");
             copy_parameter(context->token_amount, msg->parameter, sizeof(context->token_amount));
             context->next_param = UNSUPPORTED_PARAMETER;
+            msg->result = ETH_PLUGIN_RESULT_OK;
             break;
         case UNSUPPORTED_PARAMETER:  // skip referrerId and minToReceive
             PRINTF("UNSUPPORTED_PARAMETER\n");
+            msg->result = ETH_PLUGIN_RESULT_OK;
             break;
         // Keep this
         default:
@@ -41,21 +37,12 @@ void handle_provide_parameter(ethPluginProvideParameter_t *msg) {
            PARAMETER_LENGTH,
            msg->parameter);
 
-    msg->result = ETH_PLUGIN_RESULT_OK;
-
-    switch (context->selectorIndex) {
-        case DEPOSIT_INSTANT:
-        case REDEEM_INSTANT:
-            handle_parameters(msg, context);
-            break;
-        case DEPOSIT_REQUEST:
-        case REDEEM_REQUEST:
-        case REDEEM_FIAT_REQUEST:
-            handle_parameters(msg, context);
-            break;
-        default:
-            PRINTF("Selector Index not supported: %d\n", context->selectorIndex);
-            msg->result = ETH_PLUGIN_RESULT_ERROR;
-            break;
+    if (context->selectorIndex == DEPOSIT_INSTANT || context->selectorIndex == REDEEM_INSTANT ||
+        context->selectorIndex == DEPOSIT_REQUEST || context->selectorIndex == REDEEM_REQUEST ||
+        context->selectorIndex == REDEEM_FIAT_REQUEST) {
+        handle_parameters(msg, context);
+    } else {
+        PRINTF("Selector Index not supported: %d\n", context->selectorIndex);
+        msg->result = ETH_PLUGIN_RESULT_ERROR;
     }
 }

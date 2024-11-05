@@ -1,8 +1,18 @@
 #include "plugin.h"
 
-static void clean_cpy_ticker(char const *dest, const char *ticker) {
+static bool safe_strcopy(char *dst, const char *src, size_t dstsize) {
+    size_t copied_size = strlcpy(dst, src, dstsize);
+
+    if (copied_size < dstsize) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+static bool clean_cpy_ticker(char const *dest, const char *ticker) {
     memset((char *) dest, 0, MAX_TICKER_LEN);
-    strlcpy((char *) dest, ticker, MAX_TICKER_LEN);
+    return safe_strcopy((char *) dest, ticker, MAX_TICKER_LEN);
 }
 
 static const char *m_product_t_to_ticker(m_product_t m_product) {
@@ -11,14 +21,18 @@ static const char *m_product_t_to_ticker(m_product_t m_product) {
 
 // Set UI for the "Product" screen.
 static bool set_product_ui(ethQueryContractUI_t *msg, context_t *context) {
-    strlcpy(msg->title, "Product", msg->titleLength);
+    if (!safe_strcopy(msg->title, "Product", msg->titleLength)) {
+        return false;
+    }
 
-    return strlcpy(msg->msg, m_product_t_to_ticker(context->m_product), msg->msgLength);
+    return safe_strcopy(msg->msg, m_product_t_to_ticker(context->m_product), msg->msgLength);
 }
 
 // // Set UI for "Token amount" screen.
 static bool set_token_amount_ui(ethQueryContractUI_t *msg, const context_t *context) {
-    strlcpy(msg->title, context->is_deposit ? "To pay" : "To redeem", msg->titleLength);
+    if (!safe_strcopy(msg->title, context->is_deposit ? "To pay" : "To redeem", msg->titleLength)) {
+        return false;
+    };
 
     char ticker[MAX_TICKER_LEN];
 
@@ -44,7 +58,9 @@ static bool set_token_amount_ui(ethQueryContractUI_t *msg, const context_t *cont
 
 // // Set UI for "Min to receive" screen.
 static bool set_redeem_request_out_asset_ui(ethQueryContractUI_t *msg, context_t *context) {
-    strlcpy(msg->title, "You will receive", msg->titleLength);
+    if (!safe_strcopy(msg->title, "You will receive", msg->titleLength)) {
+        return false;
+    };
 
     char ticker[MAX_TICKER_LEN];
 
@@ -59,7 +75,7 @@ static bool set_redeem_request_out_asset_ui(ethQueryContractUI_t *msg, context_t
         clean_cpy_ticker(ticker, "USD");
     }
 
-    return strlcpy(msg->msg, ticker, msg->msgLength);
+    return safe_strcopy(msg->msg, ticker, msg->msgLength);
 }
 
 void handle_query_contract_ui(ethQueryContractUI_t *msg) {

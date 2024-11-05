@@ -9,21 +9,26 @@ void handle_query_contract_id(ethQueryContractID_t *msg) {
     // For the first screen, display the plugin name.
     strlcpy(msg->name, APPNAME, msg->nameLength);
 
-    if (context->selectorIndex == DEPOSIT_INSTANT) {
-        strlcpy(msg->version, "Instant Buy", msg->versionLength);
-        msg->result = ETH_PLUGIN_RESULT_OK;
-    } else if (context->selectorIndex == REDEEM_INSTANT) {
-        strlcpy(msg->version, "Instant Redeem", msg->versionLength);
-        msg->result = ETH_PLUGIN_RESULT_OK;
-    } else if (context->selectorIndex == DEPOSIT_REQUEST) {
-        strlcpy(msg->version, "Buy Request", msg->versionLength);
-        msg->result = ETH_PLUGIN_RESULT_OK;
-    } else if (context->selectorIndex == REDEEM_REQUEST ||
-               context->selectorIndex == REDEEM_FIAT_REQUEST) {
-        strlcpy(msg->version, "Redeem Request", msg->versionLength);
-        msg->result = ETH_PLUGIN_RESULT_OK;
-    } else {
-        PRINTF("Selector index: %d not supported\n", context->selectorIndex);
-        msg->result = ETH_PLUGIN_RESULT_ERROR;
+    switch (context->selectorIndex) {
+        case DEPOSIT_INSTANT:
+            strlcpy(msg->version, "Instant Buy", msg->versionLength);
+            msg->result = ETH_PLUGIN_RESULT_OK;
+            break;
+        case REDEEM_INSTANT:
+            strlcpy(msg->version, "Instant Redeem", msg->versionLength);
+            msg->result = ETH_PLUGIN_RESULT_OK;
+            break;
+        case DEPOSIT_REQUEST:
+            strlcpy(msg->version, "Buy Request", msg->versionLength);
+            msg->result = ETH_PLUGIN_RESULT_OK;
+            break;
+        case REDEEM_REQUEST:
+        case REDEEM_FIAT_REQUEST:
+            strlcpy(msg->version, "Redeem Request", msg->versionLength);
+            msg->result = ETH_PLUGIN_RESULT_OK;
+            break;
+        default:
+            PRINTF("Selector index: %d not supported\n", context->selectorIndex);
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
     }
 }
