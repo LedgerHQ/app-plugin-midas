@@ -39,8 +39,8 @@ def eth_client(backend):
     return EthAppClient(backend)
 
 @pytest.fixture(scope="function")
-def navigation_helper(navigator, firmware, test_name):
-    return NavigationHelper(navigator, firmware, test_name)
+def navigation_helper(navigator, backend, test_name):
+    return NavigationHelper(navigator, backend, test_name)
 
 @pytest.fixture(scope="function")
 def sign_helper(eth_client, navigation_helper, wallet_addr):
